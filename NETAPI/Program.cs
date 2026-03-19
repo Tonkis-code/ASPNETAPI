@@ -1,50 +1,58 @@
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
+var pokemons = new List<Pokemon>
+{
+    new Pokemon { Id = 1, Name = "Charmander", Type = "Fire" },
+    new Pokemon { Id = 2, Name = "Bulbasaur", Type = "Grass" },
+    new Pokemon { Id = 3, Name = "Squirtle", Type = "Water"}
+};
+
+var attacks = new List<Attack>
+{
+    new Attack { Id = 1, Name = "Tackle", Damage = 40, Type = "Normal" }
+};
+
 app.MapGet("/", () => "API is running.");
 
-// GET Request for the pokemons inside of the pokemons variable
-app.MapGet("/pokemons", () =>
+app.MapGet("/pokemons", () => pokemons);
+
+app.MapGet("/attacks", () => attacks);
+
+app.MapGet("/attack", (AttackRequest request) =>
 {
-    var pokemons = new[]
+    var attack = new Attack
     {
-        new { Id = 1, Name = "Charmander", Type = "Fire"},
-        new { Id = 2, Name = "Bulbasaur", Type = "Grass"},
-        new { Id = 3, Name = "Squirtle", Type = "Water"}
-    };
-
-    return pokemons;
-});
-
-var attacks = [
-    Id = attack1,
-    request.Name = "Tackle",
-    request.Damage = 40,
-    request.Type = "Normal",
-
-
-];
-
-app.Run();
-
-// POST Request for an attack
-app.MapPost("/attack", (AttackRequest request) =>
-{
-    var attack = new
-    {
-        Id = 1,
+        Id = attacks.Count + 1,
         Name = request.Name,
         Damage = request.Damage,
         Type = request.Type
     };
 
-    return attack;
+    attacks.Add(attack);
+    return Results.Created($"/attacks/{attack.Id}", attack);
 });
+
+app.Run();
+
+public class Pokemon
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public string Type { get; set; } = "";
+}
+
+public class Attack
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = "";
+    public int Damage { get; set; }
+    public string Type { get; set; } = "";
+}
 
 public class AttackRequest
 {
-    public string Name { get; set; }
-    public int Damage { get; set; }     // int because its a number not a string (i forgot)
-    public string Type { get; set; }
+    public string Name { get; set; } = "";
+    public int Damage { get; set; }
+    public string Type { get; set; } = "";
 }
-
