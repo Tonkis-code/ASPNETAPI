@@ -31,6 +31,13 @@ app.MapGet("/attacks/{id}", (int id) =>
     return attack is not null ? Results.Ok(attack) : Results.NotFound();
 });
 
+// Returns a single Pokémon chosen by ID
+app.MapGet("/pokemons/{id}", (int id) =>
+{
+    var pokemon = pokemons.FirstOrDefault(a => a.Id == id);
+    return pokemon is not null ? Results.Ok(pokemon) : Results.NotFound();
+});
+
 // Creates a new attack and adds it to the in-memory list
 app.MapPost("/attacks", (AttackRequest request) =>
 {
@@ -46,7 +53,7 @@ app.MapPost("/attacks", (AttackRequest request) =>
     return Results.Created($"/attacks/{attack.Id}", attack);
 });
 
-// Created a new Pokémon and adds it to the in-memory list
+// Creates a new Pokémon and adds it to the in-memory list
 app.MapPost("/pokemons", (PokemonRequest request) =>
 {
     var pokemon = new Pokemon
@@ -62,30 +69,5 @@ app.MapPost("/pokemons", (PokemonRequest request) =>
 
 app.Run();
 
-public class Pokemon
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-    public string Type { get; set; } = "";
-}
 
-public class Attack
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = "";
-    public int Damage { get; set; }
-    public string Type { get; set; } = "";
-}
 
-public class AttackRequest
-{
-    public string Name { get; set; } = "";
-    public int Damage { get; set; }
-    public string Type { get; set; } = "";
-}
-
-public class PokemonRequest
-{
-    public string Name { get; set; } = "";
-    public string Type { get; set; } = "";
-}
