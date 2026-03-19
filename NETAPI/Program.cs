@@ -19,7 +19,7 @@ app.MapGet("/pokemons", () => pokemons);
 
 app.MapGet("/attacks", () => attacks);
 
-app.MapGet("/attack", (AttackRequest request) =>
+app.MapPost("/attack", (AttackRequest request) =>
 {
     var attack = new Attack
     {
