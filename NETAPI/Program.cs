@@ -19,7 +19,14 @@ app.MapGet("/pokemons", () => pokemons);
 
 app.MapGet("/attacks", () => attacks);
 
-app.MapPost("/attack", (AttackRequest request) =>
+app.MapGet("/attacks/{id}", (int id) =>
+{
+    var attack = attacks.FirstOrDefault(a => a.Id == id);
+    return attack is not null ? Results.Ok(attack) : Results.NotFound();
+});
+
+
+app.MapPost("/attacks", (AttackRequest request) =>
 {
     var attack = new Attack
     {
@@ -32,6 +39,7 @@ app.MapPost("/attack", (AttackRequest request) =>
     attacks.Add(attack);
     return Results.Created($"/attacks/{attack.Id}", attack);
 });
+
 
 app.Run();
 
