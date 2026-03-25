@@ -15,6 +15,8 @@ var attacks = new List<Attack>
     new Attack { Id = 1, Name = "Tackle", Damage = 40, Type = "Normal" }
 };
 
+var battles = new List<Battle>();
+
 // Health check endpoint to verify the API is running
 app.MapGet("/", () => "API is running.");
 
@@ -65,6 +67,26 @@ app.MapPost("/pokemons", (PokemonRequest request) =>
 
     pokemons.Add(pokemon);
     return Results.Created($"/pokemons/{pokemon.Id}", pokemon);
+});
+
+app.MapPost("/battles", (CreateBattleRequest request) =>
+{
+    var player = pokemons.FirstOrDefault(a => a.Id == request.PlayerPokemonId);
+    var enemy = pokemons.FirstOrDefault(a => a.Id == request.EnemyPokemonId);
+    if (player is null || enemy is null)
+    {
+        return Results.NotFound();
+    }
+    var battle = new Battle
+    {
+        Id = battles.Count + 1,
+        PlayerPokemonId = request.PlayerPokemonId,
+        EnemyPokemonId = request.EnemyPokemonId,
+        IsOver = false
+    };
+
+    battles.Add(battle);
+    return Results.Created($"/battles/{battle.Id}", battle);
 });
 
 app.Run();
